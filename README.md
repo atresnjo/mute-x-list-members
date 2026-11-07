@@ -24,7 +24,7 @@ You can press **−** to shrink the dialog into a small button in the corner and
 1. **Finding members.** On the list's members page, X loads the members itself. The extension watches for that request and repeats it page by page until it has every member, so it doesn't depend on what's visible on screen. If that fails, it falls back to scrolling the member list.
 2. **Muting.** Each member is muted with the same request X's website sends when you click **Mute** on a profile, using your logged-in session. Members are muted as soon as they're found, one every 5 seconds, so X doesn't rate-limit you.
 3. **Rate limits.** If X does say "too many requests", the extension waits until X allows more and then continues on its own.
-4. **Remembering.** Members found and accounts muted are saved in your browser (x.com's local storage). The next run skips anyone already muted and doesn't need to load the list again. Press **Rescan list** if the list has changed.
+4. **Remembering.** Members found and accounts muted are saved in your browser (x.com's local storage). On the next run, anyone it muted before shows as **Already muted** and isn't muted again, and the list doesn't need to be loaded again. Press **Rescan list** if the list has changed.
 
 ## Privacy
 

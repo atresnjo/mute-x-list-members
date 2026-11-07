@@ -14,7 +14,7 @@ const STATUS_LABELS = {
   queued: 'Waiting',
   muting: 'Muting',
   muted: 'Muted',
-  skipped: 'Already muted',
+  alreadyMuted: 'Already muted',
   failed: 'Failed',
 };
 
@@ -42,7 +42,7 @@ function myHandle() {
   return link ? link.getAttribute('href').slice(1).toLowerCase() : null;
 }
 
-// Handles muted in earlier runs, kept in x.com's localStorage so reruns skip them.
+// Handles muted in earlier runs, kept in x.com's localStorage so reruns don't mute them again.
 function loadMuted() {
   try {
     return new Set(JSON.parse(localStorage.getItem(MUTED_KEY)) || []);
@@ -113,7 +113,7 @@ function readCell(cell) {
 function addMember(info, muted, me) {
   const key = info.handle.toLowerCase();
   if (members.has(key) || key === me) return false;
-  const member = { ...info, status: muted.has(key) ? 'skipped' : 'queued', detail: '' };
+  const member = { ...info, status: muted.has(key) ? 'alreadyMuted' : 'queued', detail: '' };
   members.set(key, member);
   if (member.status === 'queued') queue.push(member);
   ui.addRow(member);
@@ -364,7 +364,7 @@ function counts() {
   const c = { found: members.size, muted: 0, alreadyMuted: 0, failed: 0, remaining: 0 };
   for (const m of members.values()) {
     if (m.status === 'muted') c.muted++;
-    else if (m.status === 'skipped') c.muted++, c.alreadyMuted++;
+    else if (m.status === 'alreadyMuted') c.muted++, c.alreadyMuted++;
     else if (m.status === 'failed') c.failed++;
     else c.remaining++;
   }
@@ -524,7 +524,7 @@ const ui = (() => {
             <ol class="steps">
               <li><div><b>Press “Start muting”.</b><span>That’s the only thing you need to do.</span></div></li>
               <li><div><b>Members are muted as they’re found.</b><span>The list scrolls on its own, and each person is muted as soon as they appear, one every ${MUTE_DELAY_MS / 1000} seconds so X doesn’t block the requests.</span></div></li>
-              <li><div><b>Keep this tab open until it finishes.</b><span>People you already muted with this extension are skipped. If X rate-limits you, it waits and continues automatically.</span></div></li>
+              <li><div><b>Keep this tab open until it finishes.</b><span>Anyone this extension muted before shows as “Already muted” and isn’t muted again. If X rate-limits you, it waits and continues automatically.</span></div></li>
             </ol>
             <section class="progress" hidden>
               <div class="bar"><div class="fill"></div></div>
